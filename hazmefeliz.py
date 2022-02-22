@@ -19,10 +19,25 @@ def storeText(key, text, label):
     # if something went wrong, display the error
     print (response.json())
 
+#Esta función ejecuta la creación de un nuevo modelo de entrenamiento con las palabras nuevas que
+#hemos agregado. 
+def trainModel(key):
+  #checkApiKey(key)
+  
+  url = ("https://machinelearningforkids.co.uk/api/scratch/" + 
+         key + 
+         "/models")
+
+  response = requests.post(url)
+
+  if response.ok == False:
+    # if something went wrong, display the error
+    print (response.json())
+
 
 def ingresarNuevoEjemplo(text):
     
-    respuestaUsuario = input("¿Quiere añadir la palabra al modelo de entrenamiento? (S/N)")
+    respuestaUsuario = input("¿Quiere añadir la palabra al modelo de entrenamiento? (S/N) ")
     respuestaUsuario = respuestaUsuario.lower()
 
     if respuestaUsuario == 's':
@@ -34,11 +49,20 @@ def ingresarNuevoEjemplo(text):
 
         if etiqueta == 'cosas_buenas':
             print()
-            print("Vamos a añadir", text, "ha la etiqueta", etiqueta)
+            print("Vamos a añadir", text, "a la etiqueta", etiqueta)
+            storeText(API_KEY, text, etiqueta)
+            print("Entrenando...")
+            trainModel(API_KEY)
+            print("Ya está añadida el nuevo texto y entrenado.")
+
         
         elif etiqueta == 'cosas_malas':
             print()
-            print("Vamos a añadir", text, "ha la etiqueta", etiqueta)
+            print("Vamos a añadir", text, "a la etiqueta", etiqueta)
+            storeText(API_KEY, text, etiqueta)
+            print("Entrenando...")
+            trainModel(API_KEY)
+            print("Ya está añadido el nuevo texto y entrenado.")
 
         else:
             print("La respuesta tiene que ser cosas_buenas o cosas_malas, una de las dos opciones")
@@ -86,14 +110,14 @@ def respuesta(recognized):
         img = Image.open('feliz.png')
         #print(img) #<PIL.PngImagePlugin.PngImageFile image mode=RGB size=640x438 at 0x7F0D12A351F0>
         debug=img.show()
-        print(debug)
+        #print(debug)
 
     else:
         print("No me ha gustado lo que has dicho")
         img = Image.open('triste.png')
         #print(img)
         debug=img.show()
-        print(debug)
+        #print(debug)
 
 
 
@@ -110,7 +134,9 @@ def run():
     texto = input('¿Que quieres decirme? ')
 
     recognized = classify(texto)
-
+    if recognized != None:
+        respuesta(recognized)
+    
 
 if __name__ == '__main__':
     run()
