@@ -20,7 +20,8 @@ def storeText(key, text, label):
     print (response.json())
 
 #Esta función ejecuta la creación de un nuevo modelo de entrenamiento con las palabras nuevas que
-#hemos agregado. 
+#hemos agregado.
+
 def trainModel(key):
   #checkApiKey(key)
   
@@ -33,6 +34,34 @@ def trainModel(key):
   if response.ok == False:
     # if something went wrong, display the error
     print (response.json())
+
+
+def checkModel(key):
+  #checkApiKey(key)
+  
+  url = ("https://machinelearningforkids.co.uk/api/scratch/" + 
+         key + 
+         "/status")
+
+  response = requests.get(url)
+
+  if response.ok:
+    responseData = response.json()
+
+    status = {
+      2 : "ready to use",
+      1 : "training is in progress",
+      0 : "problem"
+    }
+
+    return { 
+      "status" : status[responseData["status"]], 
+      "msg" : responseData["msg"] 
+    }
+  else:
+    # if something went wrong, display the error
+    print (response.json())
+
 
 
 def ingresarNuevoEjemplo(text):
@@ -131,11 +160,17 @@ def respuesta(recognized):
 #print ("result: '%s' with %d%% confidence" % (label, confidence))
 
 def run():
-    texto = input('¿Que quieres decirme? ')
 
-    recognized = classify(texto)
-    if recognized != None:
-        respuesta(recognized)
+    siEntrenado = checkModel(API_KEY)
+
+    if siEntrenado['status'] == 'ready to use':
+        texto = input('¿Que quieres decirme? ')
+
+        recognized = classify(texto)
+        if recognized != None:
+            respuesta(recognized)
+    else:
+        print(siEntrenado)
     
 
 if __name__ == '__main__':
