@@ -107,14 +107,14 @@ def respuesta(recognized):
 
     if label == "cosas_buenas":
         print("Muchas gracias, eres muy agradable")
-        img = Image.open('feliz.png')
+        img = Image.open('img/feliz.png')
         #print(img) #<PIL.PngImagePlugin.PngImageFile image mode=RGB size=640x438 at 0x7F0D12A351F0>
         debug=img.show()
         #print(debug)
 
     else:
         print("No me ha gustado lo que has dicho")
-        img = Image.open('triste.png')
+        img = Image.open('img/triste.png')
         #print(img)
         debug=img.show()
         #print(debug)
